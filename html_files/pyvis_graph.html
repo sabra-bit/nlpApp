@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 756px;
+                 height: 756px;
+                 background-color: white;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 756px;
+                 height: 756px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "blue", "font": {"color": "black"}, "id": "Sustainability", "label": "Sustainability", "shape": "dot", "size": 15, "title": "root"}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Economic", "label": "Economic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Social", "label": "Social", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Cultural", "label": "Cultural", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Temporal", "label": "Temporal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Developmental", "label": "Developmental", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Environmental", "label": "Environmental", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Saving", "label": "Saving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "StandardOfLiving", "label": "StandardOfLiving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Efficiency", "label": "Efficiency", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "HouseholdNeeds", "label": "HouseholdNeeds", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cost", "label": "cost", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cheaper", "label": "cheaper", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "money", "label": "money", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "less expensive", "label": "less expensive", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "affordable", "label": "affordable", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "at low budget", "label": "at low budget", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "valuable", "label": "valuable", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "alternatives", "label": "alternatives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "pocket", "label": "pocket", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "financial", "label": "financial", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "discounted", "label": "discounted", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "price cut", "label": "price cut", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "quality of life", "label": "quality of life", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "matching style", "label": "matching style", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "living conditions", "label": "living conditions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "lifestyle", "label": "lifestyle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "busy women", "label": "busy women", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "working mother", "label": "working mother", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "low waste", "label": "low waste", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "leftover", "label": "leftover", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "reuse", "label": "reuse", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "storage", "label": "storage", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "seasonal", "label": "seasonal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "basic needs", "label": "basic needs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "necessity", "label": "necessity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "over use", "label": "over use", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "excess demand", "label": "excess demand", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "shopping essentials", "label": "shopping essentials", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "shopping necessary needs", "label": "shopping necessary needs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "must have", "label": "must have", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Health", "label": "Health", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Well-being", "label": "Well-being", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Quality", "label": "Quality", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Quantity", "label": "Quantity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Diversity", "label": "Diversity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "low fats", "label": "low fats", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "vegan", "label": "vegan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "low meat", "label": "low meat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "vitamins", "label": "vitamins", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "calcium", "label": "calcium", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "fibres", "label": "fibres", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "easily to digest", "label": "easily to digest", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "bodily friendly", "label": "bodily friendly", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "other sources of protein", "label": "other sources of protein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "immunity", "label": "immunity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "wholegrain", "label": "wholegrain", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "gluten-free", "label": "gluten-free", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "sugar free", "label": "sugar free", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "low sugar", "label": "low sugar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "wellness", "label": "wellness", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "nutritious", "label": "nutritious", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "energising", "label": "energising", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "refreshing", "label": "refreshing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "relaxing", "label": "relaxing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "hygiene", "label": "hygiene", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "balanced", "label": "balanced", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "well-cooked", "label": "well-cooked", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "spoon", "label": "spoon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "grams", "label": "grams", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "kilos", "label": "kilos", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "plates", "label": "plates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "ingredients", "label": "ingredients", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "per person", "label": "per person", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "serving", "label": "serving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "portions", "label": "portions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "slices", "label": "slices", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cups", "label": "cups", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "varied", "label": "varied", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "meet all the tastes", "label": "meet all the tastes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "family", "label": "family", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "friends", "label": "friends", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "loved ones", "label": "loved ones", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "partners", "label": "partners", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "children", "label": "children", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "multi", "label": "multi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Tradition", "label": "Tradition", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Heritage", "label": "Heritage", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "traditional dish", "label": "traditional dish", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "grandmother dish", "label": "grandmother dish", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "mother\u2019s dish", "label": "mother\u2019s dish", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "iconic", "label": "iconic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Family", "label": "Family", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "festivals/Eid", "label": "festivals/Eid", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "events", "label": "events", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "christmas", "label": "christmas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "thanksgiving", "label": "thanksgiving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "ancestors", "label": "ancestors", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Time", "label": "Time", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Long-termEffect", "label": "Long-termEffect", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "saving time", "label": "saving time", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "quick", "label": "quick", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "minutes", "label": "minutes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "hours", "label": "hours", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "in no time", "label": "in no time", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "fast", "label": "fast", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "instant", "label": "instant", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "busy", "label": "busy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "enduring", "label": "enduring", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "memorable", "label": "memorable", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "experiences", "label": "experiences", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Technology", "label": "Technology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cooking", "label": "cooking", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "energy saving", "label": "energy saving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "gas-saving", "label": "gas-saving", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "smart", "label": "smart", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cooking utensils", "label": "cooking utensils", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "cooking appliances", "label": "cooking appliances", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "gadgets", "label": "gadgets", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "natural", "label": "natural", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Green", "label": "Green", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "environmental", "label": "environmental", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "EnvlFriendly", "label": "EnvlFriendly", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "fresh", "label": "fresh", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "green", "label": "green", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "leaves", "label": "leaves", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "plants", "label": "plants", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "vegetables", "label": "vegetables", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "fruits", "label": "fruits", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "raw", "label": "raw", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "olive oil", "label": "olive oil", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "preservatives", "label": "preservatives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "farm", "label": "farm", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "exquisite", "label": "exquisite", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "organic", "label": "organic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "plant-based", "label": "plant-based", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "basketball", "label": "basketball", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "harm", "label": "harm", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "pollution", "label": "pollution", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "recycling", "label": "recycling", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "friendly package", "label": "friendly package", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "ecology", "label": "ecology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "eco-aware", "label": "eco-aware", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "awareness", "label": "awareness", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Sustainability", "to": "Economic", "width": 1}, {"arrows": "to", "from": "Sustainability", "to": "Social", "width": 1}, {"arrows": "to", "from": "Sustainability", "to": "Cultural", "width": 1}, {"arrows": "to", "from": "Sustainability", "to": "Temporal", "width": 1}, {"arrows": "to", "from": "Sustainability", "to": "Developmental", "width": 1}, {"arrows": "to", "from": "Sustainability", "to": "Environmental", "width": 1}, {"arrows": "to", "from": "Economic", "to": "Saving", "width": 1}, {"arrows": "to", "from": "Economic", "to": "StandardOfLiving", "width": 1}, {"arrows": "to", "from": "Economic", "to": "Efficiency", "width": 1}, {"arrows": "to", "from": "Economic", "to": "HouseholdNeeds", "width": 1}, {"arrows": "to", "from": "Saving", "to": "cost", "width": 1}, {"arrows": "to", "from": "Saving", "to": "cheaper", "width": 1}, {"arrows": "to", "from": "Saving", "to": "money", "width": 1}, {"arrows": "to", "from": "Saving", "to": "less expensive", "width": 1}, {"arrows": "to", "from": "Saving", "to": "affordable", "width": 1}, {"arrows": "to", "from": "Saving", "to": "at low budget", "width": 1}, {"arrows": "to", "from": "Saving", "to": "valuable", "width": 1}, {"arrows": "to", "from": "Saving", "to": "alternatives", "width": 1}, {"arrows": "to", "from": "Saving", "to": "pocket", "width": 1}, {"arrows": "to", "from": "Saving", "to": "financial", "width": 1}, {"arrows": "to", "from": "Saving", "to": "discounted", "width": 1}, {"arrows": "to", "from": "Saving", "to": "price cut", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "quality of life", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "matching style", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "living conditions", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "lifestyle", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "busy women", "width": 1}, {"arrows": "to", "from": "StandardOfLiving", "to": "working mother", "width": 1}, {"arrows": "to", "from": "Efficiency", "to": "low waste", "width": 1}, {"arrows": "to", "from": "Efficiency", "to": "leftover", "width": 1}, {"arrows": "to", "from": "Efficiency", "to": "reuse", "width": 1}, {"arrows": "to", "from": "Efficiency", "to": "storage", "width": 1}, {"arrows": "to", "from": "Efficiency", "to": "seasonal", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "basic needs", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "necessity", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "over use", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "excess demand", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "shopping essentials", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "shopping necessary needs", "width": 1}, {"arrows": "to", "from": "HouseholdNeeds", "to": "must have", "width": 1}, {"arrows": "to", "from": "Social", "to": "Health", "width": 1}, {"arrows": "to", "from": "Social", "to": "Well-being", "width": 1}, {"arrows": "to", "from": "Social", "to": "Quality", "width": 1}, {"arrows": "to", "from": "Social", "to": "Quantity", "width": 1}, {"arrows": "to", "from": "Social", "to": "Diversity", "width": 1}, {"arrows": "to", "from": "Health", "to": "low fats", "width": 1}, {"arrows": "to", "from": "Health", "to": "vegan", "width": 1}, {"arrows": "to", "from": "Health", "to": "low meat", "width": 1}, {"arrows": "to", "from": "Health", "to": "vitamins", "width": 1}, {"arrows": "to", "from": "Health", "to": "calcium", "width": 1}, {"arrows": "to", "from": "Health", "to": "fibres", "width": 1}, {"arrows": "to", "from": "Health", "to": "easily to digest", "width": 1}, {"arrows": "to", "from": "Health", "to": "bodily friendly", "width": 1}, {"arrows": "to", "from": "Health", "to": "other sources of protein", "width": 1}, {"arrows": "to", "from": "Health", "to": "immunity", "width": 1}, {"arrows": "to", "from": "Health", "to": "wholegrain", "width": 1}, {"arrows": "to", "from": "Health", "to": "gluten-free", "width": 1}, {"arrows": "to", "from": "Health", "to": "sugar free", "width": 1}, {"arrows": "to", "from": "Health", "to": "low sugar", "width": 1}, {"arrows": "to", "from": "Well-being", "to": "wellness", "width": 1}, {"arrows": "to", "from": "Well-being", "to": "nutritious", "width": 1}, {"arrows": "to", "from": "Well-being", "to": "energising", "width": 1}, {"arrows": "to", "from": "Well-being", "to": "refreshing", "width": 1}, {"arrows": "to", "from": "Well-being", "to": "relaxing", "width": 1}, {"arrows": "to", "from": "Quality", "to": "hygiene", "width": 1}, {"arrows": "to", "from": "Quality", "to": "balanced", "width": 1}, {"arrows": "to", "from": "Quality", "to": "well-cooked", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "spoon", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "grams", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "kilos", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "plates", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "ingredients", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "per person", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "serving", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "portions", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "slices", "width": 1}, {"arrows": "to", "from": "Quantity", "to": "cups", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "varied", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "meet all the tastes", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "family", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "friends", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "loved ones", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "partners", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "children", "width": 1}, {"arrows": "to", "from": "Diversity", "to": "multi", "width": 1}, {"arrows": "to", "from": "Cultural", "to": "Tradition", "width": 1}, {"arrows": "to", "from": "Cultural", "to": "Heritage", "width": 1}, {"arrows": "to", "from": "Tradition", "to": "traditional dish", "width": 1}, {"arrows": "to", "from": "Tradition", "to": "grandmother dish", "width": 1}, {"arrows": "to", "from": "Tradition", "to": "mother\u2019s dish", "width": 1}, {"arrows": "to", "from": "Tradition", "to": "iconic", "width": 1}, {"arrows": "to", "from": "Tradition", "to": "Family", "width": 1}, {"arrows": "to", "from": "Heritage", "to": "festivals/Eid", "width": 1}, {"arrows": "to", "from": "Heritage", "to": "events", "width": 1}, {"arrows": "to", "from": "Heritage", "to": "christmas", "width": 1}, {"arrows": "to", "from": "Heritage", "to": "thanksgiving", "width": 1}, {"arrows": "to", "from": "Heritage", "to": "ancestors", "width": 1}, {"arrows": "to", "from": "Temporal", "to": "Time", "width": 1}, {"arrows": "to", "from": "Temporal", "to": "Long-termEffect", "width": 1}, {"arrows": "to", "from": "Time", "to": "saving time", "width": 1}, {"arrows": "to", "from": "Time", "to": "quick", "width": 1}, {"arrows": "to", "from": "Time", "to": "minutes", "width": 1}, {"arrows": "to", "from": "Time", "to": "hours", "width": 1}, {"arrows": "to", "from": "Time", "to": "in no time", "width": 1}, {"arrows": "to", "from": "Time", "to": "fast", "width": 1}, {"arrows": "to", "from": "Time", "to": "instant", "width": 1}, {"arrows": "to", "from": "Time", "to": "busy", "width": 1}, {"arrows": "to", "from": "Long-termEffect", "to": "enduring", "width": 1}, {"arrows": "to", "from": "Long-termEffect", "to": "memorable", "width": 1}, {"arrows": "to", "from": "Long-termEffect", "to": "experiences", "width": 1}, {"arrows": "to", "from": "Developmental", "to": "Technology", "width": 1}, {"arrows": "to", "from": "Technology", "to": "cooking", "width": 1}, {"arrows": "to", "from": "Technology", "to": "energy saving", "width": 1}, {"arrows": "to", "from": "Technology", "to": "gas-saving", "width": 1}, {"arrows": "to", "from": "Technology", "to": "smart", "width": 1}, {"arrows": "to", "from": "Technology", "to": "cooking utensils", "width": 1}, {"arrows": "to", "from": "Technology", "to": "cooking appliances", "width": 1}, {"arrows": "to", "from": "Technology", "to": "gadgets", "width": 1}, {"arrows": "to", "from": "Environmental", "to": "natural", "width": 1}, {"arrows": "to", "from": "Environmental", "to": "Green", "width": 1}, {"arrows": "to", "from": "Environmental", "to": "environmental", "width": 1}, {"arrows": "to", "from": "Environmental", "to": "EnvlFriendly", "width": 1}, {"arrows": "to", "from": "natural", "to": "fresh", "width": 1}, {"arrows": "to", "from": "natural", "to": "green", "width": 1}, {"arrows": "to", "from": "natural", "to": "leaves", "width": 1}, {"arrows": "to", "from": "natural", "to": "plants", "width": 1}, {"arrows": "to", "from": "natural", "to": "vegetables", "width": 1}, {"arrows": "to", "from": "natural", "to": "fruits", "width": 1}, {"arrows": "to", "from": "natural", "to": "raw", "width": 1}, {"arrows": "to", "from": "natural", "to": "olive oil", "width": 1}, {"arrows": "to", "from": "natural", "to": "preservatives", "width": 1}, {"arrows": "to", "from": "natural", "to": "farm", "width": 1}, {"arrows": "to", "from": "natural", "to": "exquisite", "width": 1}, {"arrows": "to", "from": "Green", "to": "organic", "width": 1}, {"arrows": "to", "from": "Green", "to": "plant-based", "width": 1}, {"arrows": "to", "from": "Green", "to": "basketball", "width": 1}, {"arrows": "to", "from": "environmental", "to": "harm", "width": 1}, {"arrows": "to", "from": "environmental", "to": "pollution", "width": 1}, {"arrows": "to", "from": "environmental", "to": "recycling", "width": 1}, {"arrows": "to", "from": "EnvlFriendly", "to": "friendly package", "width": 1}, {"arrows": "to", "from": "EnvlFriendly", "to": "ecology", "width": 1}, {"arrows": "to", "from": "EnvlFriendly", "to": "eco-aware", "width": 1}, {"arrows": "to", "from": "EnvlFriendly", "to": "awareness", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
